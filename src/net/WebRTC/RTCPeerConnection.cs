@@ -1244,7 +1244,8 @@ namespace SIPSorcery.Net
             if(state == RTCSctpTransportState.Connected)
             {
                 logger.LogDebug("SCTP transport successfully connected.");
-                sctp.RTCSctpAssociation.OnData += (buffer) => logger.LogTrace($"SCTP data: {Encoding.UTF8.GetString(buffer)}");
+                sctp.RTCSctpAssociation.OnData += (streamID, ppid, buffer) => 
+                    logger.LogTrace($"SCTP stream ID {streamID}, ppid {ppid}, data: {Encoding.UTF8.GetString(buffer)}");
 
                 //_peerSctpAssociation.OnSCTPStreamOpen += OnSCTPStreamOpen;
 
@@ -1458,7 +1459,8 @@ namespace SIPSorcery.Net
             }
             else
             {
-                logger.LogWarning($"DTLS unexpected {alertLevel} alert {alertType}: {alertDescription}");
+                string alertMsg = !string.IsNullOrEmpty(alertDescription) ? $": {alertDescription}" : ".";
+                logger.LogWarning($"DTLS unexpected {alertLevel} alert {alertType}{alertMsg}");
             }
         }
 
